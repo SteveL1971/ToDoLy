@@ -1,32 +1,19 @@
-﻿//List that adds and contains 6 Items
-
-//List<Task> tempList = new List<Task>()
-//{
-//    new Task("Wash up",Convert.ToDateTime("12-29-2018"), "Active", "Home"),
-//    new Task("Make bed",Convert.ToDateTime("11-12-2019"), "Completed", "Home"),
-//    new Task("Mop floors",Convert.ToDateTime("03-04-2020"), "Active", "Home"),
-//    new Task("Pick apples",Convert.ToDateTime("02-16-2022"), "Completed", "Garden"),
-//    new Task("Plant seeds",Convert.ToDateTime("08-18-2021"), "Completed", "Garden"),
-//    new Task("Cut grass",Convert.ToDateTime("10-21-2017"), "Active", "Garden"),
-//};
-
-//Task[] myArray = tempList.ToArray();
-//File.WriteAllLines("tasklist.txt",
-//  Array.ConvertAll(myArray, x => x.Title.ToString() + "," + x.DueDate.ToString() + "," + x.Status.ToString() + "," + x.Project.ToString()));
-
+﻿// This is the code containing the Main menu loop
+// taskList is initialised and is filled with contents of file tasklist.txt
+// If tasklist.txt doesn't exist then a new file with 6 tasks is created
 List<Task> taskList = new List<Task>(); // initialises taskList 
 readList(); // reads in tasklist.txt file and puts the contents into <Task>taskList
 
 bool loopValue = true;
-while (loopValue == true)
+while (loopValue == true) // loops until user chooses to quit
 {
-    titleText();
-    menuText();
+    titleText(); // displays title information on every page/view
+    menuText(); // displays text of the main menu choices
     string data = Console.ReadLine();
     bool isInt = int.TryParse(data, out int value);
-    if (isInt && value >= 1 && value <= 4 && data != null)
+    if (isInt && value >= 1 && value <= 4 && data != null) // validates the user choice
     {
-        loopValue = menuChoice(data);
+        loopValue = menuChoice(data); // handles the user choice and quits if loopvalue comes back false
     }
     else
     {
@@ -35,6 +22,8 @@ while (loopValue == true)
     Thread.Sleep(500);
 }
 
+// displays the top 3 lines of every page/view
+// displays information regarding active/completed tasks
 void titleText() {
     Console.Clear();
     Console.WriteLine("Welcome to ToDoLy\n");
@@ -44,23 +33,25 @@ void titleText() {
     Console.WriteLine("-------------------------------------------------\n");
 }
 
+// displays the main menu
 void menuText()
 {
     Console.WriteLine("Please pick an option:\n");
     Console.Write("(");
-    purpleText("1");
+    colouredText("1", "purple");
     Console.WriteLine(") Show Task List (by date or project)");
     Console.Write("(");
-    purpleText("2");
+    colouredText("2", "purple");
     Console.WriteLine(") Add New Task");
     Console.Write("(");
-    purpleText("3");
+    colouredText("3", "purple");
     Console.WriteLine(") Edit Task (update, mark as done, remove)");
     Console.Write("(");
-    purpleText("4");
+    colouredText("4", "purple");
     Console.WriteLine(") Save and Quit");
 }
 
+// handles user input for the main menu
 bool menuChoice(string data)
 {
     switch(data)
@@ -84,14 +75,35 @@ bool menuChoice(string data)
     return true;
 }
 
-void purpleText(string text)
+// displays text with chosen colour
+void colouredText(string text, string colour)
 {
-    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+    switch(colour)
+    {
+        case "purple":
+            Console.ForegroundColor = ConsoleColor.DarkMagenta;
+            break;
+        case "red":
+            Console.ForegroundColor = ConsoleColor.Red;
+            break;
+        case "green":
+            Console.ForegroundColor = ConsoleColor.Green;
+            break;
+        case "blue":
+            Console.ForegroundColor = ConsoleColor.Blue;
+            break;
+        case "yellow":
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            break;
+        default:
+            Console.ForegroundColor = ConsoleColor.White;
+            break;
+    }
     Console.Write(text);
     Console.ResetColor();
 }
 
-// function which allows a user to add an Task to taskList 
+// handles adding a Task to taskList 
 void addTask()
 {
 loopStart:
@@ -107,23 +119,48 @@ loopStart:
 
     Console.WriteLine("\nDue date:\n");
     Console.Write("(");
-    purpleText("1");
-    Console.WriteLine(") Today's date");
+    colouredText("1", "purple");
+    Console.WriteLine(") 1 week to complete task");
     Console.Write("(");
-    purpleText("2");
+    colouredText("2", "purple");
+    Console.WriteLine(") 2 weeks to complete task");
+    Console.Write("(");
+    colouredText("3", "purple");
+    Console.WriteLine(") 1 month to complete task");
+    Console.Write("(");
+    colouredText("4", "purple");
+    Console.WriteLine(") 2 months to complete task");
+    Console.Write("(");
+    colouredText("5", "purple");
     Console.WriteLine(") Enter a different date");
     var data = Console.ReadLine();
     bool isInt = int.TryParse(data, out int value);
     DateTime date = DateTime.Now;
-    if (isInt && value >= 1 && value <= 2)
+    if (isInt && value >= 1 && value <= 5)
     {
         switch (value) // handles menu choices. 
         {
             case 1: // make a date from today's date
-                Console.WriteLine("\nToday's date chosen");
+                Console.WriteLine("\n1 week chosen");
+                date=date.AddDays(7);
                 Thread.Sleep(1000);
                 break;
-            case 2: // make a date from user input. 
+            case 2: // make a date from today's date
+                Console.WriteLine("\n2 weeks chosen");
+                date = date.AddDays(14);
+                Thread.Sleep(1000);
+                break;
+            case 3: // make a date from today's date
+                Console.WriteLine("\n1 month chosen");
+                date = date.AddMonths(1);
+                Thread.Sleep(1000);
+                break;
+            case 4: // make a date from today's date
+                Console.WriteLine("\n2 months chosen");
+                date = date.AddMonths(2);
+                Thread.Sleep(1000);
+                break;
+            case 5: // make a date from user input. 
                 int day = 0;
                 int month = 0;
                 int year = 0;
@@ -149,9 +186,7 @@ loopStart:
                 }
                 catch (Exception e)  // handles an invalid date by informing user and moving back to loopStart; 
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("\nInvalid date!");
-                    Console.ResetColor();
+                    colouredText("\nInvalid date!", "red");
                     Thread.Sleep(1000);
                     goto loopStart;
                 }
@@ -160,10 +195,10 @@ loopStart:
 
     Console.WriteLine("\nSelect status:\n");
     Console.Write("(");
-    purpleText("1");
+    colouredText("1", "purple");
     Console.WriteLine(") Active");
     Console.Write("(");
-    purpleText("2");
+    colouredText("2", "purple");
     Console.WriteLine(") Completed");
     string status = "";
     bool menuLoop = true;
@@ -214,6 +249,7 @@ loopStart:
     Thread.Sleep(1000);
 }
 
+// handles editing and deleting a task
 void editTask() 
 {
     while (true)
@@ -233,65 +269,121 @@ void editTask()
             bool keepLooping = true;
             while (keepLooping == true)
             {
+                loopStart:
                 titleText();
                 listHeader();
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine(taskIndex.ToString().PadRight(4) + task.Title.PadRight(15) + task.DueDate.ToString("yyyy-MM-dd").PadRight(15) + task.Status.PadRight(15) + task.Project.PadRight(15));
-                Console.ResetColor();
-                Console.Write("\n(");
-                purpleText("1");
+                taskList[taskIndex-1].printDetails(taskIndex-1);
+                Console.Write("\n\nEdit task options:\n\n(");
+                colouredText("1", "purple");
                 Console.WriteLine(") Change title");
                 Console.Write("(");
-                purpleText("2");
-                Console.WriteLine(") Flip Status");
+                colouredText("2", "purple");
+                Console.WriteLine(") Change date");
                 Console.Write("(");
-                purpleText("3");
+                colouredText("3", "purple");
+                Console.WriteLine(") Flip status");
+                Console.Write("(");
+                colouredText("4", "purple");
+                Console.WriteLine(") Change project");
+                Console.WriteLine("    --------------");
+                Console.Write("(");
+                colouredText("5", "purple");
                 Console.WriteLine(") Delete task");
 
                 Console.WriteLine("\nChoose from menu (q) to return to previous page: ");
                 int value = 0;
                 data = Console.ReadLine();
                 isInt = int.TryParse(data, out value);
-                if (isInt && value >= 1 && value <= 3)
+                if (isInt && value >= 1 && value <= 5)
                 {
                     switch(value)
                     {
                         case 1:
-                            Console.WriteLine("Enter a new title");
+                            Console.WriteLine("\nEnter a new title");
                             data = Console.ReadLine();
                             if(data != null && data.Length>0)
                             {
                                 taskList[taskIndex - 1].Title = data;
+                                colouredText("\nTitle changed to '" + data + "'", "green");
+                                Thread.Sleep(1000);
                             }
                             else
                             {
-                                Console.WriteLine("Title can't be blank!");
-                                Thread.Sleep(200);
+                                colouredText("Title can't be blank!", "red");
+                                Thread.Sleep(1000);
                             }
                             break;
                         case 2:
+                            int day = 0;
+                            int month = 0;
+                            int year = 0;
+                            value = 0;
+                            Console.Write("Enter day dd: ".PadRight(14));
+                            data = Console.ReadLine();
+                            isInt = int.TryParse(data, out value);
+                            if (isInt && value >= 1 && value <= 31) day = value;
+                            Console.Write("Enter month MM: ".PadRight(14));
+                            data = Console.ReadLine();
+                            isInt = int.TryParse(data, out value);
+                            if (isInt && value >= 1 && value <= 12) month = value;
+                            Console.Write("Enter year YYYY: ".PadRight(14));
+                            data = Console.ReadLine();
+                            isInt = int.TryParse(data, out value);
+                            if (isInt && value >= 1900 && value <= 2099) year = value;
+                            try // tries to create a date 
+                            {
+                                taskList[taskIndex - 1].DueDate = new DateTime(year, month, day);
+                                colouredText("\nNew due date is " + taskList[taskIndex - 1].DueDate.ToString("yyyy-MM-dd"), "green");
+                                Thread.Sleep(1000);
+                                break;
+                            }
+                            catch (Exception e)  // handles an invalid date by informing user and moving back to loopStart; 
+                            {
+                                colouredText("\nInvalid date!", "red");
+                                Thread.Sleep(1000);
+                                goto loopStart;
+                            }
+
+                        case 3:
                             if(task.Status == "Active")
                             {
                                 taskList[taskIndex - 1].Status = "Completed";
+                                colouredText("\nStatus flipped to 'Completed'", "green");
+                                Thread.Sleep(1000);
                             }
                             else
                             {
                                 taskList[taskIndex-1].Status = "Active";
+                                colouredText("\nStatus flipped to 'Active'", "green");
+                                Thread.Sleep(1000);
                             }
                             break;
-                        case 3:
+                        case 4:
+                            Console.WriteLine("\nEnter a new project");
+                            data = Console.ReadLine();
+                            if (data != null && data.Length > 0)
+                            {
+                                taskList[taskIndex - 1].Project = data;
+                                colouredText("\nProject changed to '" + data + "'", "green");
+                                Thread.Sleep(1000);
+                            }
+                            else
+                            {
+                                colouredText("Project can't be blank!", "red");
+                                Thread.Sleep(1000);
+                            }
+                            break;
+                        case 5:
                             Console.Write("\nAre you sure you want to delete task '");
-                            Console.ForegroundColor = ConsoleColor.Blue;
-                            Console.Write(task.Title);
-                            Console.ResetColor();
+                            colouredText(task.Title, "blue");
                             Console.Write("'?");
-                            Console.WriteLine("\nConfirm with (y) or any other key to return" );
+                            Console.WriteLine("\n\nConfirm with (y) or any other key to return" );
                             data = Console.ReadLine();
                             if (data.ToLower() == "y")
                             {
                                 taskList.RemoveAt(taskIndex - 1);
-                                Console.WriteLine("The task has been deleted!");
-                                Thread.Sleep(400);
+                                colouredText("\nThe task has been deleted!", "green");
+                                Thread.Sleep(1000);
                             }
                             keepLooping = false;
                             break;
@@ -312,20 +404,20 @@ void editTask()
     }
 }
 
+// displays header rows to displayed Item lists
 void listHeader() {
-    Console.ForegroundColor = ConsoleColor.Blue;
-    Console.WriteLine("    " + "Title".PadRight(15) + "Due Date".PadRight(15) + "Status".PadRight(15) + "Project".ToString().PadRight(15));
-    Console.ResetColor();
-    Console.WriteLine("    " + "-----".PadRight(15) + "--------".PadRight(15) + "------".PadRight(15) + "-------".PadRight(15));
+    colouredText("    " + "Title".PadRight(15) + "Due Date".PadRight(15) + "Status".PadRight(15) + "Project".ToString().PadRight(15), "blue");
+    Console.WriteLine("\n    " + "-----".PadRight(15) + "--------".PadRight(15) + "------".PadRight(15) + "-------".PadRight(15));
 }
 
-// Function that allows a user to create an Task and adds it to taskList
+// creates a new Task and adds it to taskList
 void createTask(string title, DateTime date, string status, string project)
 {
     taskList.Add(new Task(title,date, status, project));
 }
 
-// Fuction that loops through a sorted taskList to display all Tasks
+// allows user to choose how Task list is sorted and then displays all rows
+// also creates a menu to allow user to continue choosing sort order
 void displayTasks(int order = 1, string sortedBy = "date ascending")
 {
     while (true)
@@ -333,13 +425,13 @@ void displayTasks(int order = 1, string sortedBy = "date ascending")
         titleText();
         
         Console.Write("Sort options:\n\n(");
-        purpleText("1");
+        colouredText("1", "purple");
         Console.Write(") date asc | (");
-        purpleText("2");
+        colouredText("2", "purple");
         Console.Write(") date desc | (");
-        purpleText("3");
+        colouredText("3", "purple");
         Console.Write(") project asc | (");
-        purpleText("4");
+        colouredText("4", "purple");
         Console.WriteLine(") project desc\n");
 
         listHeader();
@@ -402,6 +494,26 @@ void displayTasks(int order = 1, string sortedBy = "date ascending")
     }
 }
 
+// creates a new file from a template of 6 tasks. Will be used if no tasklist.txt is found
+void createFile()
+{
+    List<Task> tempList = new List<Task>()
+{
+    new Task("Wash up",Convert.ToDateTime("12-29-2018"), "Active", "Home"),
+    new Task("Make bed",Convert.ToDateTime("11-12-2019"), "Completed", "Home"),
+    new Task("Mop floors",Convert.ToDateTime("03-04-2020"), "Active", "Home"),
+    new Task("Pick apples",Convert.ToDateTime("02-16-2022"), "Completed", "Garden"),
+    new Task("Plant seeds",Convert.ToDateTime("08-18-2021"), "Completed", "Garden"),
+    new Task("Cut grass",Convert.ToDateTime("10-21-2017"), "Active", "Garden"),
+};
+
+    Task[] myArray = tempList.ToArray();
+    File.WriteAllLines("tasklist.txt",
+      Array.ConvertAll(myArray, x => x.Title.ToString() + "," + x.DueDate.ToString() + "," + x.Status.ToString() + "," + x.Project.ToString()));
+}
+
+// writes the contents of taskList to tasklist.txt
+// this occurs when user quits from main menu
 void writeList()
 {
     Task[] myArray = taskList.ToArray();
@@ -409,35 +521,41 @@ void writeList()
     Array.ConvertAll(myArray, x => x.Title.ToString() + "," + x.DueDate.ToString() + "," + x.Status.ToString() + "," + x.Project.ToString()));
 }
 
+// tries to read tasks from tasklist.txt
+// if no file exists then a file will be created from a template
 void readList()
 {
-    string readText = File.ReadAllText("tasklist.txt");  // Read the contents of the file
-    //Console.WriteLine(readText);  // Output the content
+    if (File.Exists("tasklist.txt"))
+    {
+        string readText = File.ReadAllText("tasklist.txt");  // Read the contents of the file
+    }
+    else
+    {
+        Console.WriteLine("Specified file does not " +
+                  "exist in the current directory.");
+        createFile();
+    }
 
     // Read the file and display it line by line.  
     foreach (string line in System.IO.File.ReadLines("tasklist.txt"))
     {
         string thisLine = line;
-        //Console.WriteLine(thisLine);
         int charPos = thisLine.IndexOf(",");
         string title = thisLine.Substring(0, charPos);
-        //Console.WriteLine(title);
         thisLine = thisLine.Substring(charPos + 1);
         charPos = thisLine.IndexOf(",");
         string date = thisLine.Substring(0, charPos);
         DateTime dateDue = Convert.ToDateTime(date);
-        //Console.WriteLine(date);
-        //Console.WriteLine(dateDue);
         thisLine = thisLine.Substring(charPos + 1);
         charPos = thisLine.IndexOf(",");
         string status = thisLine.Substring(0, charPos);
-        //Console.WriteLine(status);
         string project = thisLine.Substring(charPos + 1);
-        //Console.WriteLine(project);
         createTask(title, dateDue, status, project);
     }
 }
 
+
+// class describing how an Item should be created
 class Task
 {
     public Task(string title, DateTime dueDate, string status, string project)
@@ -453,17 +571,22 @@ class Task
     public string Status { get; set; }
     public string Project { get; set; }
 
+
+    // method that handles formatting of rows with following colours:
+    // white  - active and not overdue
+    // yellow - active and is within 1 week of the due date
+    // red    - active and past due date
+    // green  - completed
+
     public void printDetails(int i)
     {
-        DateTime dateInThreeMonths = DateTime.Now.AddMonths(3);
-        //TimeSpan diff = dateInThreeMonths - DueDate;
-        int res = DateTime.Compare(DueDate, dateInThreeMonths);
+        DateTime dateInOneWeek = DateTime.Now.AddDays(7);
+        int res = DateTime.Compare(DueDate, dateInOneWeek);
         if (res < 0 && this.Status == "Active")
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
         }
 
-        //TimeSpan diff2 = DateTime.Now - DueDate;
         res = DateTime.Compare(DueDate, DateTime.Now);
         if (res < 0 && this.Status == "Active")
         {
@@ -475,8 +598,7 @@ class Task
             Console.ForegroundColor = ConsoleColor.Green;
         }
 
-        Console.Write((i + 1).ToString().PadRight(4));
-        Console.WriteLine(this.Title.PadRight(15) + this.DueDate.ToString("yyyy-MM-dd").PadRight(15) + this.Status.PadRight(15) + this.Project.PadRight(15));
+        Console.WriteLine((i + 1).ToString().PadRight(4) + this.Title.PadRight(15) + this.DueDate.ToString("yyyy-MM-dd").PadRight(15) + this.Status.PadRight(15) + this.Project.PadRight(15));
         Console.ResetColor();
     }
 }
